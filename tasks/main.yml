@@ -1,0 +1,68 @@
+---
+- name: resolve platform specific vars
+  include_vars: '{{item}}'
+  with_first_found:
+    - files:
+        - '{{ansible_distribution}}-{{ansible_distribution_release}}.yml'
+        - '{{ansible_distribution}}.yml'
+        - '{{ansible_os_family}}.yml'
+      skip: true
+      paths:
+        - '{{role_path}}/vars'
+
+- name: install dep pkgs...
+  become: yes
+  become_user: root
+  with_items: '{{tor_dep_os_pkgs|default([])}}'
+  package:
+    name: '{{item}}'
+    state: present
+        
+- name: git clone...
+  become: yes
+  become_user: root
+  git:
+    repo: '{{tor_git}}'
+    dest: '{{tor_src_dir}}'
+    version: '{{tor_name}}'
+
+- name: autogen.sh...
+  become: yes
+  become_user: root
+  command: sh autogen.sh
+  args:
+    chdir: '{{tor_src_dir}}'
+    creates: '{{tor_src_dir}}/configure'
+
+- name: configure...
+  become: yes
+  become_user: root
+  command: ./configure --disable-asciidoc
+  args:
+    chdir: '{{tor_src_dir}}'
+    creates: '{{tor_src_dir}}/Makefile'
+
+- name: make...
+  become: yes
+  become_user: root
+  command: make
+  args:
+    chdir: '{{tor_src_dir}}'
+    creates: '{{tor_src_dir}}/src/or/tor'
+  
+- name: install...
+  become: yes
+  become_user: root
+  command: make install
+  args:
+    chdir: '{{tor_src_dir}}'
+    creates: /usr/local/bin/tor
+
+- name: cleanup...
+  become: yes
+  become_user: root
+  with_items:
+    - '{{tor_src_dir}}'
+  file:
+    path: '{{item}}'
+    state: absent

@@ -1,0 +1,4 @@
+---
+# vars file for tor
+tor_name: tor-{{tor_ver}}
+tor_src_dir: '{{tor_src_parent_dir}}/{{tor_name}}'

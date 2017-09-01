@@ -1,0 +1,5 @@
+---
+tor_dep_os_pkgs:
+  - libevent-dev
+  - openssl-dev
+  - zlib-dev
