@@ -1,5 +1,5 @@
 ---
 # defaults file for tor
 tor_git: https://git.torproject.org/tor.git
-tor_ver: '0.3.1.7'
+tor_ver: '0.3.1.9'
 tor_src_parent_dir: /usr/local
