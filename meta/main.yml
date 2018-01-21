@@ -27,7 +27,8 @@ galaxy_info:
         - jessie
         - stretch
   galaxy_tags:
-    - development
+    - tor
+    - anonymity
 
 dependencies:
   - src: andrewrothstein.git
