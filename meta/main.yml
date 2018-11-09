@@ -32,6 +32,6 @@ galaxy_info:
 
 dependencies:
   - src: andrewrothstein.git
-    version: v3.0.1
+    version: v3.0.2
   - src: andrewrothstein.gcc-toolbox
-    version: v1.0.7
+    version: v1.0.9
