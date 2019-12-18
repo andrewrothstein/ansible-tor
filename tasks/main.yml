@@ -1,21 +1,21 @@
 ---
 - name: resolve platform specific vars
-  include_vars: '{{item}}'
+  include_vars: '{{ item }}'
   with_first_found:
     - files:
-        - '{{ansible_distribution}}-{{ansible_distribution_release}}.yml'
-        - '{{ansible_distribution}}.yml'
-        - '{{ansible_os_family}}.yml'
+        - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
       skip: true
       paths:
-        - '{{role_path}}/vars'
+        - '{{ role_path }}/vars'
 
 - name: install dep pkgs...
   become: yes
   become_user: root
-  with_items: '{{tor_dep_os_pkgs|default([])}}'
+  with_items: '{{ tor_dep_os_pkgs|default([]) }}'
   package:
-    name: '{{item}}'
+    name: '{{ item }}'
     state: present
 
 - name: look for install
@@ -31,47 +31,45 @@
       become: yes
       become_user: root
       git:
-        repo: '{{tor_git}}'
-        dest: '{{tor_src_dir}}'
-        version: '{{tor_name}}'
+        repo: '{{ tor_git }}'
+        dest: '{{ tor_src_dir }}'
+        version: '{{ tor_name }}'
 
     - name: autogen.sh...
       become: yes
       become_user: root
       command: sh autogen.sh
       args:
-        chdir: '{{tor_src_dir}}'
-        creates: '{{tor_src_dir}}/configure'
+        chdir: '{{ tor_src_dir }}'
+        creates: '{{ tor_src_dir }}/configure'
 
     - name: configure...
       become: yes
       become_user: root
       command: ./configure --disable-asciidoc
       args:
-        chdir: '{{tor_src_dir}}'
-        creates: '{{tor_src_dir}}/Makefile'
+        chdir: '{{ tor_src_dir }}'
+        creates: '{{ tor_src_dir }}/Makefile'
 
     - name: make...
       become: yes
       become_user: root
       command: make
       args:
-        chdir: '{{tor_src_dir}}'
-        creates: '{{tor_src_dir}}/src/or/tor'
+        chdir: '{{ tor_src_dir }}'
+        creates: '{{ tor_src_dir }}/src/tor/tor'
   
     - name: install...
       become: yes
       become_user: root
       command: make install
       args:
-        chdir: '{{tor_src_dir}}'
+        chdir: '{{ tor_src_dir }}'
         creates: /usr/local/bin/tor
   always:
     - name: cleanup...
       become: yes
       become_user: root
-      with_items:
-        - '{{tor_src_dir}}'
       file:
-        path: '{{item}}'
+        path: '{{ tor_src_dir }}'
         state: absent
