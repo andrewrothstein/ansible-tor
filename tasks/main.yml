@@ -46,7 +46,7 @@
     - name: configure...
       become: yes
       become_user: root
-      command: ./configure --disable-asciidoc
+      command: '{{ tor_src_dir }}/configure --disable-asciidoc'
       args:
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/Makefile'
