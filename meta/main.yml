@@ -1,8 +1,8 @@
 dependencies:
 - role: andrewrothstein.git
-  version: v3.0.7
+  version: v3.1.1
 - role: andrewrothstein.gcc-toolbox
-  version: v1.1.1
+  version: v1.1.2
 galaxy_info:
   author: Andrew Rothstein
   company: Core Dump
