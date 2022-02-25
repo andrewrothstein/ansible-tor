@@ -1,4 +1,10 @@
 ---
 - hosts: all
   roles:
-    - role: '{{playbook_dir}}'
+    - role: '{{ playbook_dir }}'
+  tasks:
+    - command: bash -c 'tor --version'
+      register: tor_test_output
+    - name: tor --version
+      debug:
+        msg: '{{ tor_test_output.stdout }}'

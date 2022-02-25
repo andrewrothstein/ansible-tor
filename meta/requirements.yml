@@ -1,0 +1,5 @@
+---
+- name: andrewrothstein.git
+  version: v3.1.6
+- name: andrewrothstein.gcc-toolbox
+  version: v1.1.5
