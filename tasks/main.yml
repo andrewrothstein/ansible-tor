@@ -11,7 +11,7 @@
         - '{{ role_path }}/vars'
 
 - name: install dep pkgs...
-  become: yes
+  become: true
   become_user: root
   with_items: '{{ tor_dep_os_pkgs|default([]) }}'
   package:
@@ -19,7 +19,7 @@
     state: present
 
 - name: look for install
-  become: yes
+  become: true
   stat:
     path: /usr/local/bin/tor
   changed_when: False
@@ -28,7 +28,7 @@
 - when: not tor_binary.stat.exists
   block:
     - name: git clone...
-      become: yes
+      become: true
       become_user: root
       git:
         repo: '{{ tor_git }}'
@@ -36,7 +36,7 @@
         version: '{{ tor_name }}'
 
     - name: autogen.sh...
-      become: yes
+      become: true
       become_user: root
       command: sh autogen.sh
       args:
@@ -44,7 +44,7 @@
         creates: '{{ tor_src_dir }}/configure'
 
     - name: configure...
-      become: yes
+      become: true
       become_user: root
       command: '{{ tor_src_dir }}/configure --disable-asciidoc'
       args:
@@ -52,7 +52,7 @@
         creates: '{{ tor_src_dir }}/Makefile'
 
     - name: make...
-      become: yes
+      become: true
       become_user: root
       command: make
       args:
@@ -60,7 +60,7 @@
         creates: '{{ tor_src_dir }}/src/tor/tor'
   
     - name: install...
-      become: yes
+      become: true
       become_user: root
       command: make install
       args:
@@ -68,7 +68,7 @@
         creates: /usr/local/bin/tor
   always:
     - name: cleanup...
-      become: yes
+      become: true
       become_user: root
       file:
         path: '{{ tor_src_dir }}'
