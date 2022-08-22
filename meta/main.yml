@@ -1,3 +1,4 @@
+---
 dependencies:
 - andrewrothstein.git
 - andrewrothstein.gcc-toolbox
@@ -25,11 +26,13 @@ galaxy_info:
   - name: EL
     versions:
     - 8
+    - 9
   - name: Fedora
     versions:
-    - 35
     - 36
+    - 37
   - name: Ubuntu
     versions:
     - bionic
     - focal
+    - jammy
