@@ -1,5 +1,7 @@
 ---
 - include_role:
+    name: andrewrothstein.bash
+- include_role:
     name: andrewrothstein.git
 - include_role:
     name: andrewrothstein.gcc-toolbox
