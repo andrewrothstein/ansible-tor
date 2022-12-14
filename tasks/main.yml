@@ -1,4 +1,8 @@
 ---
+- include_role:
+    name: andrewrothstein.git
+- include_role:
+    name: andrewrothstein.gcc-toolbox
 - name: resolve platform specific vars
   include_vars: '{{ item }}'
   with_first_found:
@@ -13,7 +17,7 @@
 - name: install dep pkgs...
   become: true
   become_user: root
-  with_items: '{{ tor_dep_os_pkgs|default([]) }}'
+  with_items: '{{ tor_dep_os_pkgs | default([]) }}'
   package:
     name: '{{ item }}'
     state: present
@@ -38,7 +42,7 @@
     - name: autogen.sh...
       become: true
       become_user: root
-      command: sh autogen.sh
+      command: sh -l {{ tor_src_dir }}/autogen.sh
       args:
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/configure'

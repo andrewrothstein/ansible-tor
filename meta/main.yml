@@ -1,7 +1,4 @@
 ---
-dependencies:
-- andrewrothstein.git
-- andrewrothstein.gcc-toolbox
 galaxy_info:
   author: Andrew Rothstein
   company: Core Dump
