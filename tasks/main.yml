@@ -4,7 +4,7 @@
 - include_role:
     name: andrewrothstein.git
 - include_role:
-    name: andrewrothstein.gcc-toolbox
+    name: andrewrothstein.gcc_toolbox
 - name: resolve platform specific vars
   include_vars: '{{ item }}'
   with_first_found:
@@ -16,24 +16,23 @@
       paths:
         - '{{ role_path }}/vars'
 
-- name: install dep pkgs...
+- name: install os dep pkgs...
   become: true
   become_user: root
-  with_items: '{{ tor_dep_os_pkgs | default([]) }}'
   package:
-    name: '{{ item }}'
+    name: '{{ tor_dep_os_pkgs | default([]) }}'
     state: present
 
 - name: look for install
   become: true
   stat:
     path: /usr/local/bin/tor
-  changed_when: False
+xs  changed_when: false
   register: tor_binary
 
 - when: not tor_binary.stat.exists
   block:
-    - name: git clone...
+    - name: git clone {{ tor_git }}:{{ tor_name }}
       become: true
       become_user: root
       git:
@@ -41,7 +40,7 @@
         dest: '{{ tor_src_dir }}'
         version: '{{ tor_name }}'
 
-    - name: autogen.sh...
+    - name: autogen.sh ({{ tor_src_dir }})
       become: true
       become_user: root
       command: sh -l {{ tor_src_dir }}/autogen.sh
@@ -57,15 +56,15 @@
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/Makefile'
 
-    - name: make...
+    - name: make ({{ tor_src_dir }})
       become: true
       become_user: root
       command: make
       args:
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/src/tor/tor'
-  
-    - name: install...
+
+    - name: make install ({{ tor_src_dir }})
       become: true
       become_user: root
       command: make install
@@ -73,7 +72,7 @@
         chdir: '{{ tor_src_dir }}'
         creates: /usr/local/bin/tor
   always:
-    - name: cleanup...
+    - name: rm -rf {{ tor_src_dir }}
       become: true
       become_user: root
       file:
