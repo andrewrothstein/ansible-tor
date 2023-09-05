@@ -27,7 +27,7 @@
   become: true
   stat:
     path: /usr/local/bin/tor
-xs  changed_when: false
+  changed_when: false
   register: tor_binary
 
 - when: not tor_binary.stat.exists
