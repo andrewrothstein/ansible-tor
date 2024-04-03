@@ -1,12 +1,15 @@
 ---
-- include_role:
+- name: Installing andrewrothstein.bash
+  ansible.builtin.include_role:
     name: andrewrothstein.bash
-- include_role:
+- name: Installing andrewrothstein.git
+  ansible.builtin.include_role:
     name: andrewrothstein.git
-- include_role:
+- name: Installing andrewrothstein.gcc_toolbox
+  ansible.builtin.include_role:
     name: andrewrothstein.gcc_toolbox
-- name: resolve platform specific vars
-  include_vars: '{{ item }}'
+- name: Resolve platform specific vars
+  ansible.builtin.include_vars: '{{ item }}'
   with_first_found:
     - files:
         - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
@@ -16,65 +19,60 @@
       paths:
         - '{{ role_path }}/vars'
 
-- name: install os dep pkgs...
+- name: Install os dep pkgs...
   become: true
   become_user: root
-  package:
+  ansible.builtin.package:
     name: '{{ tor_dep_os_pkgs | default([]) }}'
     state: present
 
-- name: look for install
+- name: Cloning {{ tor_git }} version {{ tor_name }} to {{ tor_src_dir }}
   become: true
-  stat:
-    path: /usr/local/bin/tor
+  become_user: root
+  ansible.builtin.git:
+    repo: '{{ tor_git }}'
+    dest: '{{ tor_src_dir }}'
+    version: '{{ tor_name }}'
+    depth: 1
+
+- name: Looking for tor executable at {{ tor_exe }}
+  become: true
+  ansible.builtin.stat:
+    path: '{{ tor_exe }}'
   changed_when: false
   register: tor_binary
 
-- when: not tor_binary.stat.exists
+- name: Building tor from {{ tor_src_dir }}
+  when: not tor_binary.stat.exists
   block:
-    - name: git clone {{ tor_git }}:{{ tor_name }}
-      become: true
-      become_user: root
-      git:
-        repo: '{{ tor_git }}'
-        dest: '{{ tor_src_dir }}'
-        version: '{{ tor_name }}'
 
-    - name: autogen.sh ({{ tor_src_dir }})
+    - name: Executing '{{ tor_autogen_cmd }}'
       become: true
       become_user: root
-      command: sh -l {{ tor_src_dir }}/autogen.sh
+      ansible.builtin.command: '{{ tor_autogen_cmd }}'
       args:
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/configure'
 
-    - name: configure...
+    - name: Executing '{{ tor_configure_cmd }}'
       become: true
       become_user: root
-      command: '{{ tor_src_dir }}/configure --disable-asciidoc'
+      ansible.builtin.command: '{{ tor_configure_cmd }}'
       args:
         chdir: '{{ tor_src_dir }}'
         creates: '{{ tor_src_dir }}/Makefile'
 
-    - name: make ({{ tor_src_dir }})
+    - name: Executing '{{ tor_make_cmd }}'
       become: true
       become_user: root
-      command: make
+      ansible.builtin.command: '{{ tor_make_cmd }}'
       args:
         chdir: '{{ tor_src_dir }}'
-        creates: '{{ tor_src_dir }}/src/tor/tor'
-
-    - name: make install ({{ tor_src_dir }})
+        creates: '{{ tor_exe }}'
+    - name: Executing '{{ tor_make_install_cmd }}'
       become: true
       become_user: root
-      command: make install
+      ansible.builtin.command: '{{ tor_make_install_cmd }}'
       args:
         chdir: '{{ tor_src_dir }}'
         creates: /usr/local/bin/tor
-  always:
-    - name: rm -rf {{ tor_src_dir }}
-      become: true
-      become_user: root
-      file:
-        path: '{{ tor_src_dir }}'
-        state: absent

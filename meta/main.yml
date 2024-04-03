@@ -6,9 +6,9 @@ galaxy_info:
   galaxy_tags:
     - tor
     - anonymity
-  license:
-    - MIT
-  min_ansible_version: 2.0
+  license: MIT
+  min_ansible_version: '2.0'
+  namespace: andrewrothstein
   platforms:
     - name: Alpine
       versions:
@@ -19,12 +19,12 @@ galaxy_info:
         - bullseye
     - name: EL
       versions:
-        - 8
-        - 9
+        - '8'
+        - '9'
     - name: Fedora
       versions:
-        - 37
-        - 38
+        - '38'
+        - '39'
     - name: Ubuntu
       versions:
         - focal

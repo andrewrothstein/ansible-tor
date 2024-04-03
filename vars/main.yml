@@ -1,4 +1,9 @@
 ---
 # vars file for tor
-tor_name: tor-{{tor_ver}}
-tor_src_dir: '{{tor_src_parent_dir}}/{{tor_name}}'
+tor_name: tor-{{ tor_ver }}
+tor_src_dir: '{{ tor_src_parent_dir }}/{{ tor_name }}'
+tor_autogen_cmd: '{{ tor_src_dir }}/autogen.sh{% if tor_autogen_opts is defined %} {{ tor_autogen_opts }}{% endif %}'
+tor_configure_cmd: '{{ tor_src_dir }}/configure{% if tor_configure_opts is defined %} {{ tor_configure_opts }}{% endif %}'
+tor_make_cmd: make{% if tor_make_opts is defined %} {{ tor_make_opts }}{% endif %}
+tor_make_install_cmd: make install{% if tor_make_install_opts is defined %} {{ tor_make_install_opts }}{% endif %}
+tor_exe: '{{ tor_src_dir }}/src/tor/tor'

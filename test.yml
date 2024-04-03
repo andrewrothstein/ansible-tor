@@ -1,10 +1,13 @@
 ---
-- hosts: all
+- name: Testing andrewrothstein.tor
+  hosts: all
   roles:
     - role: '{{ playbook_dir }}'
   tasks:
-    - command: bash -c 'tor --version'
+    - name: Executing 'tor --version'
+      ansible.builtin.command: tor --version
+      changed_when: false
       register: tor_test_output
-    - name: tor --version
-      debug:
+    - name: Output from 'tor --version'
+      ansible.builtin.debug:
         msg: '{{ tor_test_output.stdout }}'
