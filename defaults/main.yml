@@ -1,7 +1,7 @@
 ---
 # defaults file for tor
 tor_git: https://gitlab.torproject.org/tpo/core/tor.git
-tor_ver: '0.4.8.10'
+tor_ver: '0.4.8.12'
 tor_src_parent_dir: /usr/local
 # tor_autogen_opts: ''
 tor_configure_opts: '--disable-asciidoc'
